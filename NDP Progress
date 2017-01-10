@@ -1,0 +1,59 @@
+library('xts')
+library('chron')
+library('stringr')
+
+#setwd("C:/Users/ravindersin/Documents/NDP")
+best <- read.csv('best.csv')
+
+a <- best$open_time
+NROW(a)
+#Round time to the nearest quarter 
+a_posix <- as.POSIXct(a, format = "%H:%M:%S")
+a <- strftime(a_posix, format="%H:%M:%S")
+a <- times(a)
+a <- 24*as.numeric(times(a))
+a_posix[1:10]
+
+b <-align.time(a_posix, n = 60*10)
+b <- strftime(b, format = "%H:%M:%S")
+b <- times(b)
+b <- 24*as.numeric(times(b))
+
+x <- as.data.frame(table(sort(b)))
+
+b_ts <-xts(b)
+
+table(b)
+View(x)
+table(x$Var1,x$Var1)
+
+
+
+name <- as.character(x$Var1)
+assign_name <- c()
+assign_value <- c()
+for(i in 1:96){
+  if(i+1 > 96){
+   # print(i)
+    greater_95 <- (i+1) - 96 # how much the value is greater than 95
+    less_95 <- 96 - i #how much the value is less than 95
+    assign(paste(name[i], name[greater_95], sep = ' - '), sum(x[i:(i+less_95),'Freq'], x[1:greater_95,'Freq']))
+    assign_name <- append(assign_name, paste(name[i], name[greater_95], sep = ' - '))
+    assign_value <- append(assign_value,get(assign_name[length(assign_name)]))
+    
+  }
+  if(i+1 <= 96){
+   
+  assign(paste(name[i], name[i+1], sep = ' - '), sum(x[i:(i+1),'Freq']))
+  assign_name <- append(assign_name, paste(name[i], name[i+1], sep = ' - '))
+  assign_value <- append(assign_value,get(assign_name[length(assign_name)])) }
+}
+
+my_df <- data.frame(assign_name = assign_name, assign_value = assign_value)
+my_df <-my_df[order(-assign_value),]
+
+
+View(x)
+hourly_data <- time_clus(data = x, name_col = 'Var1', name_value = 'Freq',t_combine = 4)
+hourly_data$assign_name <- as.factor(hourly_data$assign_name)
+write.csv(hourly_data, 'hourly_data.csv')
