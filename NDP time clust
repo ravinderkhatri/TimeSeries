@@ -1,0 +1,34 @@
+#' A time_clus Function
+#' 
+#' This Function allows you to group your various time stamps 
+#' time_clus()
+
+
+time_clus <- function(data,name_col,name_value, t_combine){
+  
+  name <- as.character(data[,name_col])
+  
+  assign_name <- c()
+  assign_value <- c()
+  for(i in seq(1,NROW(data),t_combine)){
+    if(i+t_combine > NROW(data)){
+      # print(i)
+      greater_nrow_data <- (i+t_combine) - NROW(data) # how much the value is greater than NROW(Data)
+      less_nrow_data <- NROW(data) - i #how much the value is less than NROW(Data)
+      assign(paste(name[i], name[greater_nrow_data], sep = ' - '), sum(x[i:(i+less_nrow_data),name_value], x[1:greater_nrow_data,name_value]))
+      assign_name <- append(assign_name, paste(name[i], name[greater_nrow_data], sep = ' - '))
+      assign_value <- append(assign_value,get(assign_name[length(assign_name)]))
+      
+    }
+    if(i+t_combine <= NROW(data)){
+      
+      assign(paste(name[i], name[i+t_combine], sep = ' - '), sum(x[i:(i+t_combine),name_value]))
+      assign_name <- append(assign_name, paste(name[i], name[i+t_combine], sep = ' - '))
+      assign_value <- append(assign_value,get(assign_name[length(assign_name)])) }
+  }
+  
+  my_df <- data.frame(assign_name = assign_name, assign_value = assign_value)  
+  return(my_df)
+}
+#dt <- my_function(data = x, name_col = 'Var1', name_value = 'Freq', t_combine = 4)
+
