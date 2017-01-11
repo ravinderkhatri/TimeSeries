@@ -1,0 +1,105 @@
+library('xts')
+library('chron')
+library('stringr')
+install.packages('mondate')
+library('mondate')
+best <- read.csv('best.csv')
+
+time_seq <- seq(from=as.POSIXct("2012-01-01 00:00:00", tz="UTC"), 
+    to=as.POSIXct("2012-01-01 23:00:00", tz="UTC"), by="hour")
+
+
+time_seq <- strftime(time_seq, format="%H:%M:%S", tz = "UTC")
+start_time <- times(time_seq) 
+end_time <- times(start_time) + times("00:59:59")
+start_time
+end_time
+time_df <- data.frame(start_time = start_time, end_time = end_time)
+
+a <- best$open_time
+b <-times(a )
+
+time_count <- c()
+time_interval <- c()
+
+for(i in 1:NROW(time_df)){
+time_count <- append(time_count,sum(b >= times(time_df[i,1]) & b <= times(time_df[i,2])))
+
+time_interval <- append(time_interval,paste(as.character(time_df[i,1]), as.character(time_df[i,2])))
+
+}
+my_new_data <- data.frame(timeinterval = time_interval, timecount = time_count)
+sum(my_new_data[,2])
+
+########changing time 
+time_seq <- seq(from=as.POSIXct("2012-01-01 00:15:00", tz="UTC"), 
+                to=as.POSIXct("2012-01-01 23:15:00", tz="UTC"), by="hour")
+
+
+time_seq <- strftime(time_seq, format="%H:%M:%S", tz = "UTC")
+start_time <- times(time_seq) 
+end_time <- times(start_time) + times("00:59:59")
+time_df <- data.frame(start_time = start_time, end_time = end_time)
+
+a <- best$open_time
+b <-times(a )
+
+time_count <- c()
+time_interval <- c()
+
+for(i in 1:NROW(time_df)){
+  time_count <- append(time_count,sum(b >= times(time_df[i,1]) & b <= times(time_df[i,2])))
+  
+  time_interval <- append(time_interval,paste(as.character(time_df[i,1]), as.character(time_df[i,2])))
+  
+}
+my_new_data2 <- data.frame(timeinterval = time_interval, timecount = time_count)
+my_new_data
+my_new_data2
+
+############changing time 
+time_seq <- seq(from=as.POSIXct("2012-01-01 23:30:00", tz="UTC"), 
+                to=as.POSIXct("2012-01-02 22:30:00", tz="UTC"), by="hour")
+
+time_seq <- strftime(time_seq, format="%H:%M:%S", tz = "UTC")
+start_time <- times(time_seq) 
+end_time <- times(start_time) + times("00:59:59")
+time_df <- data.frame(start_time = start_time, end_time = end_time)
+
+a <- best$open_time
+b <-times(a )
+
+time_count <- c()
+time_interval <- c()
+
+for(i in 1:NROW(time_df)){
+  time_count <- append(time_count,sum(b >= times(time_df[i,1]) & b <= times(time_df[i,2])))
+  
+  time_interval <- append(time_interval,paste(as.character(time_df[i,1]), as.character(time_df[i,2])))
+  
+}
+my_new_data3 <- data.frame(timeinterval = time_interval, timecount = time_count)
+
+################changing time 
+############changing time 
+time_seq <- seq(from=as.POSIXct("2012-01-01 00:00:00", tz="UTC"), 
+                to=as.POSIXct("2012-01-01 23:30:00", tz="UTC"), by="30 min")
+
+time_seq <- strftime(time_seq, format="%H:%M:%S", tz = "UTC")
+start_time <- times(time_seq) 
+end_time <- times(start_time) + times("00:29:59")
+time_df <- data.frame(start_time = start_time, end_time = end_time)
+
+a <- best$open_time
+b <-times(a )
+
+time_count <- c()
+time_interval <- c()
+
+for(i in 1:NROW(time_df)){
+  time_count <- append(time_count,sum(b >= times(time_df[i,1]) & b <= times(time_df[i,2])))
+  
+  time_interval <- append(time_interval,paste(as.character(time_df[i,1]), as.character(time_df[i,2])))
+  
+}
+my_new_data5 <- data.frame(timeinterval = time_interval, timecount = time_count)
